@@ -1,14 +1,14 @@
-:root {
-    --primary-color: rgba(12, 32, 77, 0.95);
-    --overlay-color: rgba(12, 28, 67, 0.95);
-    --addl-color: rgba(0, 103, 187, .8);
-    --font-style: 'Verdana', sans-serif;
+:root{
+    --primary-color: rgba(33, 223, 230, 0.95);
+    --overlay-color: linear-gradient(244deg, #e70af2,#009bff,#4abde3);
+    --addl-color: rgba(74, 189, 227);
+    --font-family: Verdana, Geneva, sans-serif
 }
 
 body {
     background-color: var(--primary-color);
     font-family: var(--font-style);
-    color: white;
+    color: black;
 }
 
 table {
@@ -21,14 +21,14 @@ th,
 td {
     padding: 0.5rem 1rem;
     text-align: center;
-    border: 1px solid white;
+    border: 1px solid black;
     font-weight: 500;
     letter-spacing: 0.15rem;
 }
 
 th {
     background-color: var(--overlay-color);
-    color: white;
+    color: black;
 }
 caption{
     letter-spacing: 0.4rem;

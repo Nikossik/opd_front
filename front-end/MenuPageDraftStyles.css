@@ -1,9 +1,9 @@
 /* CORE STYLES */
 :root {
-    --primary-color: rgba(12, 32, 77, 0.95);
-    --overlay-color: rgba(12, 28, 67 , 0.95);
+    --primary-color: rgba(30, 192, 197, 0.95);
+    --overlay-color: linear-gradient(244deg, #e70af2,#009bff,#4abde3);
     --menu-speed: 0.75s;
-
+    
 }
 /*Verdana, Geneva, sans-serif
 box-sizing: border-box;
@@ -21,7 +21,6 @@ body {
     font-family: 'Verdana', sans-serif;
     line-height: 1.5;
 }
-
 .container {
     max-width: 960px;
     margin: auto;
@@ -31,7 +30,7 @@ body {
 }
 
 .showcase {
-    background: linear-gradient(to top, var(--primary-color), 20%, #0C2043);
+    /* background: linear-gradient(90deg, #6b52bb,#00a7ee,#7be9f0); */
     /*background: linear-gradient(50deg, var(--primary-color), #06002C); #0C204D*/
     /*background: var(--primary-color);*/
     color: #fff;
@@ -68,10 +67,12 @@ body {
 
 .button {
     display: inline-block;
+    font-size: 20px;
+    border-radius: 15px;
     border: none;
-    color: var(--primary-color);
+    color: black;
     background: #fff;
-    padding: 0.9rem 3rem;
+    padding: 20px 50px;
     margin-top: 3rem;
     transition: opacity .6s ease-in-out;
     text-decoration: none;
@@ -113,6 +114,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 10px;
 }
 
 /*menu-icon line*/
@@ -225,6 +227,6 @@ checked makes elem clickable*/
     transition: color 0.4s ease-out;
 }
 h1{
-    font-width: lighter;
+    font-weight: lighter;
     letter-spacing: 8px;
 }

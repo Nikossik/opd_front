@@ -15,11 +15,13 @@ const server = express();
 server.use(express.json());
 server.use(express.static('front-end'));
 server.use(express.static('resources'));
+server.use(express.static('public'));
 server.use('js-script', express.static('js-scripts'));
 server.use(express.urlencoded({ extended: true }));
 server.use(session({ secret: 'my_secret', resave: false, saveUninitialized: false }));
 server.use(flash())
 server.set('views', path.join(__dirname, 'front-end'))
+server.use(express.static(__dirname + '/front-end'));
 server.set('view engine', 'ejs')
 
 passport.use('local', new LocalStrategy({ usernameField: 'login' }, async (login, password, done) => {
@@ -95,7 +97,7 @@ server.get('/register', (req, res) => {
     res.render('RegistrationForm', {errorMessage});
 });
 
-server.get('/admin/register', (req, res) => {
+server.get('/adminRegister', (req, res) => {
     if(!req.isAuthenticated()){
         res.redirect('/login')
         return
@@ -116,55 +118,6 @@ server.get('/admin/register', (req, res) => {
 server.get('/characteristics', (req, res) => {
     res.render('SecondPage');
 })
-
-server.get('/polls_results', async (req, res) => {
-        try {
-            const polls = await Poll.findAll();
-
-            res.render('ResultsPage', { polls });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Internal Server Error');
-        }
-})
-
-server.get('/poll_1_part_1', (req, res) => {
-    if(!req.isAuthenticated()){
-        res.redirect('/login')
-        return
-    }
-
-    const checkAdmin = req.user.isAdmin;
-
-    if(!checkAdmin){
-        res.redirect('/')
-    }
-
-    else{
-        res.render('1stTest1stPart');
-    }
-})
-
-server.get('/poll_1_part_2', (req, res) => {
-    if (!req.flash("passed_1_part")[0]){
-        res.redirect('/')
-    }
-    else {
-        const data = JSON.parse(decodeURIComponent(req.query.data)).pollData;
-
-        const profession = data.profession
-        let characteristics = []
-
-        for (let i = 0; i<169; i++){
-            if(data["question" + i]){
-                characteristics.push({id: i, name:data["question" + i]})
-            }
-        }
-
-        res.render('1stTest2ndPart', {profession, characteristics})
-    }
-})
-
 
 server.get('/light_test', (req, res) => {
     if (!req.isAuthenticated()){
@@ -223,6 +176,7 @@ server.post('/get_tests_from_db', async (req, res) => {
     const testId = req.body.testId
     const username = req.body.username
     const testType = req.body.testType
+    const profession = req.body.profession
 
     const tests = await filterTest(type, username, testId, testType)
 
@@ -299,7 +253,7 @@ server.post('/login', passport.authenticate('local', {
 }), function(req, res) {
     res.redirect('/');
 }, function(req, res, next) {
-    req.flash('error', 'Invalid username or password');
+    req.flash('error', 'Неверно заданы логин или пароль');
     res.redirect('/login');
 });
 
@@ -320,12 +274,12 @@ server.post('/register', async (req, res, next) => {
             return res.redirect('/');
         });
     } catch (err) {
-        req.flash('error', 'User already exists')
+        req.flash('error', 'Пользователь уже существует')
         res.redirect("/register")
     }
 });
 
-server.post('/admin/register', async (req, res, next) => {
+server.post('/adminRegister', async (req, res, next) => {
     const { login, password } = req.body;
     const isAdmin = true;
     const sex = req.body.sex;
@@ -338,82 +292,127 @@ server.post('/admin/register', async (req, res, next) => {
                 console.log(err);
                 return next(err);
             }
-            return res.redirect("/admin/register");
+            return res.redirect("/");
         });
     } catch (err) {
-        req.flash('error', 'User already exists')
-        res.redirect("/admin/register")
+        req.flash('error', 'Пользователь уже существует')
+        res.redirect("/adminRegister")
     }
 });
 
-server.post("/poll_1_part_2", async (req, res) => {
+server.get('/poll_1_part_1', (req, res) => {
     if(!req.isAuthenticated()){
-        res.redirect("/login")
-        return;
+        res.redirect('/login')
+        return
+    }
+
+    const checkAdmin = req.user.isAdmin;
+
+    if(!checkAdmin){
+        res.redirect('/')
     }
 
     else{
-        let data = null
-
-        if (req.query.data){
-            data = JSON.parse(decodeURIComponent(req.query.data))
-        }
-
-        const pollData = req.body
-
-        req.flash("passed_1_part", true)
-
-        if(data){
-            data = {
-                pollData: pollData,
-                data: data
-            }
-            res.redirect(`/poll_1_part_2?data=${encodeURIComponent(JSON.stringify(data))}`)
-        } else {
-            res.redirect(`/poll_1_part_2?data=${encodeURIComponent(JSON.stringify(data))}`)
-        }
+        res.render('1stTest1stPart');
     }
 })
 
+server.get('/poll_1_part_2', (req, res) => {
+    if (!req.flash("passed_1_part")[0]){
+        res.redirect('/')
+    }
+    else {
+        const data = JSON.parse(decodeURIComponent(req.query.data)).pollData;
+
+        const profession = data.profession
+        let characteristics = []
+
+        for (let i = 0; i<169; i++){
+            if(data["question" + i]){
+                characteristics.push({id: i, name:data["question" + i]})
+            }
+        }
+        console.log({ profession, characteristics });
+        res.render('1stTest2ndPart', {profession, characteristics})
+    }
+})
+
+
+server.post("/poll_1_part_2", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.redirect("/login");
+        return;
+    }
+
+    let data = {};
+
+    if (req.query.data) {
+        data = JSON.parse(decodeURIComponent(req.query.data)); 
+    }
+
+    data.pollData = req.body; 
+    console.log('111')
+    console.log(data.pollData)
+    console.log('111')
+    req.flash("passed_1_part", true);
+
+    res.redirect(`/poll_1_part_2?data=${encodeURIComponent(JSON.stringify(data))}`);
+});
+
 server.post("/1st_test", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.redirect("/login");
+        return;
+    }
+    const bodyData = req.body;
+    const queryData = req.query.data ? JSON.parse(decodeURIComponent(req.query.data)) : {};
+    const pollData = queryData.pollData || {};
+
+    const profession = pollData.profession;
+
+    const characteristics = pollData.characteristics || [];
+
     let results = ""
 
     for (let i = 0; i < 169; i++) {
-        if (req.body["value" + i]){
-            results += req.body["value" + i]
+        if (bodyData["value" + i]){
+            results += bodyData["value" + i]
         }
         else{
             results += "0"
         }
     }
-
-    const profession = decodeURIComponent(req.query.profession)
-    const points = results
-    const user = req.user.id
-    const allData = JSON.parse(decodeURIComponent(req.query.data))
-    let data = null
-
-    if (allData.data){
-        data = allData.data
-        data.i++;
-    }
+    const user = req.user.id;
 
     try {
-        const poll = await Poll.create({user, profession,  points})
+        await Poll.create({
+            user,
+            profession,
+            points: results
+        });
 
-        if(data){
-            if (data.i - 1 !== data.tests.length) {
-                res.redirect('/' + data.tests[data.i - 1] + '?data=' + encodeURIComponent(JSON.stringify(data)))
-            }  else {
-                res.redirect('/polls_results')
-            }
+        if(queryData.tests && queryData.i < queryData.tests.length) {
+            queryData.i++;
+            res.redirect('/' + queryData.tests[queryData.i] + '?data=' + encodeURIComponent(JSON.stringify(queryData)));
         } else {
-            return res.redirect('/polls_results')
+            res.redirect('/polls_results');
         }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-    catch (err){
-        console.log(err)
-    }
+});
+
+
+server.get('/polls_results', async (req, res) => {
+        try {
+            const polls = await Poll.findAll();
+
+            res.render('ResultsPage', { polls });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
 })
 
 server.post('/reaction_test', async (req, res) => {

@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="MenuPageDraftStyles.css">
-    <title>Hamburger Menu Overlay</title>
+    <title>ДОМАШНАЯЯ СТРАНИЦА</title>
+    <style>
+        body {
+        background-image: url('images/background_gradient.png');
+        background-size: cover; 
+        background-position: center; 
+    }
+    </style>
+
 </head>
 <body>
 <div class="menu-wrap">
@@ -14,26 +22,34 @@
         <div>
             <div>
                 <ul>
-                    <li><a href="/">HOME PAGE</a></li>
-                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="/">ДОМАШНЯЯ СТРАНИЦА</a></li>
+                    <!-- <li><a href="#">О САЙТЕ</a></li> -->
                     <li>
                         <% if (!loggedIn) { %>
-                            <a href="/login">LOGIN</a>
+                            <a href="/login">ВОЙТИ</a>
                         <% } %>
                     </li>
-                    <li><a href="/characteristics">CONTENT</a></li>
+                    <li><a href="/characteristics">ПРОФЕССИИ</a></li>
                     <li>
                         <% if (adminUser) { %>
-                            <a href="/poll_1_part_1">POLL</a>
+                            <a href="/poll_1_part_1">ОПРОС</a>
                         <% } %>
                     </li>
                     <li><% if (adminUser) { %>
-                            <a href="/admin/register">ADD NEW ADMIN</a>
+                        <a href="/polls_results">РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ</a>
+                    <% } %>
+                    </li>
+                    <li><% if (adminUser) { %>
+                            <a href="/adminRegister">ДОБАВИТЬ АДМИНА</a>
                         <% } %>
+                    </li>
+                    <li><% if (adminUser) { %>
+                        <a href="/create_invite">ССЫЛКА-ПРИГЛАШЕНИЕ</a>
+                    <% } %>
                     </li>
                     <li>
                         <% if (loggedIn) { %>
-                            <a href="/logout">LOGOUT</a>
+                            <a href="/logout">ВЫЙТИ</a>
                         <% } %>
                     </li>
                 </ul>
@@ -44,14 +60,14 @@
 
 <header class="showcase">
     <div class="container showcase-inner">
-        <h1>HEADING</h1>
+        <img src="images/itmo_logo_white.png" class="itmo_logo" alt="Logo Picture" style="size: 30%;">
         <div id="username">
             <% if (username) { %>
-                <p>Hi, <%= username %>!</p>
+                <p>Здравствуйте, <%= username %>!</p>
             <% } %>
         </div>
-        <p>there will be some text, I don't really know which one,<br> but there will definitely be some shit</p>
-        <a href="/characteristics" class="button">READ MORE</a>
+        <p style="font-size: 30px;">Узнайте от студентов ITMO о профессиях IT сферы</p>
+        <a href="/characteristics" class="button">ПРОФЕССИИ</a>
     </div>
 </header>
 </body>
