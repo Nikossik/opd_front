@@ -7,7 +7,7 @@ const crypto = require('crypto')
 const LocalStrategy = require('passport-local').Strategy;
 const {sequelize, User, Poll, ReactionTest} = require('./models/index');
 const {ComplexReactionTest, InviteLink, AccuracyTest} = require("./models");
-const {filterTest, getUsers} = require('./js-scripts/databaseManipulations')
+const {filterTest, getUsers, getAdmins} = require('./js-scripts/databaseManipulations')
 const {login} = require("passport/lib/http/request");
 
 const server = express();
@@ -114,6 +114,22 @@ server.get('/adminRegister', (req, res) => {
         res.render('AdminRegistrationForm', {errorMessage});
     }
 })
+
+server.get('/adminPage', async (req, res) => {
+    if(req.isAuthenticated()){
+        username = req.user.login;
+        adminUser = req.user.isAdmin;
+        loggedIn = true;
+
+        const adminLogins = await getAdmins();
+        res.render('AdminPage', { logins: adminLogins });
+    } else{
+        username = "";
+        adminUser = false;
+        loggedIn = false;
+        res.redirect('/login')
+    }
+});
 
 server.get('/characteristics', (req, res) => {
     res.render('SecondPage');
@@ -518,6 +534,10 @@ server.post('/create_invite', async (req, res) => {
         console.log(e)
     }
 })
+
+
+
+// HERE IS YOUR CODE
 
 sequelize.sync().then(() => {
     server.listen(3000, () => {

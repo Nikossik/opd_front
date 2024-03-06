@@ -49,6 +49,11 @@
                     </li>
                     <li>
                         <% if (loggedIn) { %>
+                            <a href="/adminPage">ЭКСПЕРТЫ</a>
+                        <% } %>
+                    </li>
+                    <li>
+                        <% if (loggedIn) { %>
                             <a href="/logout">ВЫЙТИ</a>
                         <% } %>
                     </li>
@@ -63,7 +68,7 @@
         <img src="images/itmo_logo_white.png" class="itmo_logo" alt="Logo Picture" style="size: 30%;">
         <div id="username">
             <% if (username) { %>
-                <p>Здравствуйте, <%= username %>!</p>
+                <p style="font-size: 30px";>Здравствуйте, <%= username %>!</p>
             <% } %>
         </div>
         <p style="font-size: 30px;">Узнайте от студентов ITMO о профессиях IT сферы</p>

@@ -1,3 +1,4 @@
+const { getHashes } = require('crypto')
 const {Poll, ReactionTest, ComplexReactionTest, User, AccuracyTest} = require('../models')
 
 async function filterTest(type, username, testId, testType){
@@ -111,5 +112,20 @@ async function getUsers(){
 
     return logins
 }
+async function getAdmins(){
+    const admins = await User.findAll({
+        where: {
+            isAdmin: true
+        },
+        attributes: ['id', 'login'] 
+    });
 
-module.exports = {filterTest, getUsers}
+    return admins.map(admin => {
+        return { id: admin.id, login: admin.login };
+    });
+}
+
+
+// HERE IS YOUR CODE
+
+module.exports = {filterTest, getUsers, getAdmins}
